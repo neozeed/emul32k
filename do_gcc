@@ -1,0 +1,1 @@
+gcc -o emul32k -O2 emul32k.c 32016.c mem32016.c Decode.c
