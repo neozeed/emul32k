@@ -12,7 +12,7 @@
 #include "32016.h"
 #include "mem32016.h"
 
-uint8_t ns32016ram[K256];
+uint8_t ns32016ram[RAM_SIZE];
 
 void init_ram(void)
 {
@@ -45,6 +45,11 @@ void dump_ram(void)
 uint8_t read_x8(uint32_t addr)
 {
    //addr &= MEM_MASK;
+
+   if (addr == 0x800002)
+	{
+	return(getchar());
+	}
 
    if (addr < IO_BASE)
    {
@@ -120,6 +125,14 @@ void write_x8(uint32_t addr, uint8_t val)
 #ifdef TRACE_WRITEs
    PiTRACE(" @%06"PRIX32" = %02"PRIX8"\n", addr, val);
 #endif
+//1 byte over 8MB
+   if (addr == 0x800001)	//0x3fff0)
+	{
+//	printf("wrote 0x%X %d\n",val,val);
+//	n32016_ShowRegs(0xFF);
+	putch(val);	
+	return;
+	}
 
    if (addr <= (RAM_SIZE - sizeof(uint8_t)))
    {
@@ -133,17 +146,6 @@ void write_x8(uint32_t addr, uint8_t val)
       return;
    }
 
-   if (addr == 0xF90000)
-   {
-#ifdef PANDORA_ROM_PAGE_OUT
-      PiTRACE("Pandora ROM no longer occupying the entire memory space!\n")
-      memset(ns32016ram, 0, RAM_SIZE);
-#else
-//      PiTRACE("Pandora ROM writes to 0xF90000\n");
-#endif
-
-      return;
-   }
 
 //   PiTRACE("Writing outside of RAM @%06"PRIX32" %02"PRIX8"\n", addr, val);
 }

@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
           {
              tubecycles = 8;
              n32016_exec();
-   //             printf("%8X \n",pc);
+//                printf("%8X \n",pc);
              oops++;
              if (tubecycles<0) {break;}
           }
